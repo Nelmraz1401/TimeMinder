@@ -9,7 +9,17 @@ export default {
         primary: {
           700: "#00357d",
         }
-      }
+      }, 
+      keyframes: {
+        easeUp: {
+          '0%': { marginTop: '-100vh' },
+          '100%': { marginTop: '0vh' },
+        },
+        // Define more animations as needed
+      },
+      animation: {
+        easeUp: 'easeUp 1s ease-in-out', 
+      },
     },
   },
   plugins: [

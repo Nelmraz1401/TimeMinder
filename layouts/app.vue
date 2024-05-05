@@ -20,9 +20,7 @@
     navigateTo('/signin')
   }
 
-  const userInformation = ref({
-    just_checked_in: false
-  })
+  const userInformation = useProfile()
   function getInformation(){
     axios.get(APIs.AUTH).then(res => {
       userInformation.value = res.data
@@ -41,31 +39,43 @@
 
 
 <template>
-  <nav class="p-4 bg-white border-b flex items-center justify-between fixed top-0 left-0 w-full z-50 h-20" >
-    <div class="flex space-x-2" >
+  <!-- <nav class="bg-white grid grid-cols-3 fixed top-0 left-0 w-full z-50 h-20" > -->
+    <!-- <div class="flex col-span-2 space-x-2 bg-gray-100 px-4" >
       <div class="flex space-x-2 items-center text-primary-700 font-semibold" >
         <img src="/timeminder.png" class="w-12" />
-        <div>TimeMinder</div>
       </div>
     </div>
-    <div class="flex items-center space-x-6" >
-      <NuxtLink to="/profile" v-if="userInformation.name" >
+    <div class="flex justify-between p-[1.8em] items-center space-x-6" > -->
+      <!-- <Icon
+            name="lucide:calendar"
+            class="text-3xl transition-all cursor-pointer text-black" 
+          />
+      <div class="flex jutify-end gap-3">
+        <NuxtLink to="/profile" v-if="userInformation.name" >
         <div class="flex space-x-2" >
-          <div class="text-right" >
+          <div class="w-9 h-9 rounded-lg bg-primary-700 text-white flex items-center justify-center font-bold text2-white" >
+            {{ level }}
+          </div>
+          <div class="text-left" >
             <div>{{ userInformation.name }}</div>
             <div class="text-xs text-gray-400" >{{ userInformation.email }}</div>
           </div>
-          <div class="w-9 h-9 rounded-full bg-primary-700 text-white flex items-center justify-center font-bold text2-white" >
-            {{ level }}
-          </div>
         </div>
       </NuxtLink>
-      <button @click="logout()" >
+      <Icon
+         @click="logout()"
+            name="mingcute:exit-line"
+            class="text-3xl transition-all cursor-pointer text-black" 
+          />
+
+      </div>     -->
+     
+      <!-- <button  >
         Logout
-      </button>
-    </div>
-  </nav>
-  <main class="mt-20 p-5" >
+      </button> -->
+    <!-- </div> -->
+  <!-- </nav> -->
+  <main class="md:overflow-hidden h-[100vh] w-[100vw]" >
     <slot />
 
     <Toast />

@@ -13,6 +13,13 @@
   const habitStore = useHabitsStore()
   const habitList = computed(() => habitStore.list.filter(item => !item.is_dummy))
   const editingTaskState = useEditingTask()
+  const speechToText = useSpeechToText()
+
+  const props = defineProps({
+    creating: {
+      type: Boolean
+    }
+  })
 
   const emits = defineEmits(['submit']);
   const listOfDays = ref(['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'])
@@ -84,7 +91,7 @@
 
       editingTaskState.value = null
     }).catch(err => {
-      console.log(err)
+      //
     })
   }
 
@@ -102,7 +109,6 @@
 
   // Watch for editing task
   watch(editingTaskState, () => {
-    console.log( editingTaskState.value )
     if( !editingTaskState.value ) return
 
     axios.get(APIs.TASKS + `/${ editingTaskState.value }`).then(res => {
@@ -116,6 +122,103 @@
     })
   });
 
+  // Speech Recognition
+  const speechToCreate = ref({
+    step: 1,
+    max: 7, // Manually calculated
+  })
+
+  function stcJump(step = 1){
+    if( (step == -1 && speechToCreate.value.step == 1) || (step == 1 && speechToCreate.value.step == speechToCreate.value.max)  ) return false;
+
+    speechToCreate.value.step += step
+  }
+
+  function parseSpeech(speech){
+    if( !props.creating || !speech ) return false;
+
+    speech = speech.trim()
+    console.log(`CREATING: "${ speech }"`)
+
+    switch( speech.toUpperCase() ){
+
+      // Built-in commands
+      case "BACK":
+        stcJump(-1)
+        speechToText.value.last = speech
+        return
+
+      case "NEXT":
+      case "OK":
+        stcJump(1)
+        speechToText.value.last = speech
+        return
+
+      case "CREATE NOW":
+      case "SUBMIT IT":
+      case "SUBMIT":
+        submitCreate();
+        speechToText.value.last = speech
+        return
+
+      // Parsing of inputs
+      // Mapping of inputs based on the form input order
+      default:
+        const keys = ['', 'deadline_on', 'title', 'description', 'type', 'habit', 'repeat_on_days', 'repeat_until']
+        const key = keys[ speechToCreate.value.step ]
+        let content = speech
+
+        if( key == 'deadline_on' ){
+          content = speech.replaceAll('.', '')
+          content = speech.replaceAll(' am', 'AM')
+          content = speech.replaceAll(' pm', 'PM')
+          content = moment(speech).toDate()
+          
+          if( !content ) return console.warn(`Invalid Date: ${ content }`)
+        }
+
+        if( key == 'type' ){
+          let map = {
+            HABIT: 0,
+            TASK: 1,
+          }
+
+          content = map[ speech.toUpperCase() ]
+          speechToText.value.last = content
+          if( !content ) return
+        }
+
+        if( key == 'repeat_on_days' ){
+          const parsedSpeech = content.split(' ')
+          const fullList = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']
+          fullList.forEach((day, itemIndex) => {
+            parsedSpeech.forEach(parsed => {
+              if( day == parsed.toUpperCase() ){
+                inputs.value[key][itemIndex] = !inputs.value[key][itemIndex]
+              }
+            })
+          })
+
+          speechToText.value.last = speech
+          return
+        }
+
+        if( key ){
+          inputs.value[key] = content
+          speechToText.value.last = speech
+        }
+        break;
+
+    }
+
+  }
+
+  watch(() => speechToText.value.speech, () => {
+    parseSpeech(speechToText.value.speech)
+  })
+
+  // End speech
+
   onMounted(() => {
     tasksStore.fetchSuggestions()
     habitStore.fetchHabits()
@@ -123,35 +226,38 @@
 </script>
 
 <template>
-  <form @submit.prevent="inputs._id ? submitEdit() : submitCreate()" class="space-y-4" >
+  <form @submit.prevent="inputs._id ? submitEdit() : submitCreate()" class="space-y-4 pb-12" >
     <div>
-      <label>Deadline <span class="text-red-500" >*</span></label>
-      <VueDatePicker @update:model-value="tasksStore.fetchSuggestions(inputs.deadline_on)" v-model="inputs.deadline_on" :min-date="moment()" :is-24="false" />
+      <label :class="{ 'speech-active-label': speechToCreate.step === 1 }" >Deadline <span class="text-red-500" >*</span></label>
+      <VueDatePicker
+        @update:model-value="tasksStore.fetchSuggestions(inputs.deadline_on)" v-model="inputs.deadline_on" :min-date="moment().toDate()" :is-24="false"
+        :class="{ 'speech-active-input': speechToCreate.step === 1 }"
+      />
       <p v-if="errors.deadline_on" class="input-error">{{ errors.deadline_on }}</p>
     </div>
     <div>
       <TaskSuggestions />
     </div>
     <div>
-      <label>Title <span class="text-red-500" >*</span></label>
-      <input class="form-input" type="text" v-model="inputs.title" />
+      <label :class="{ 'speech-active-label': speechToCreate.step === 2 }" >Title <span class="text-red-500" >*</span></label>
+      <input :class="{ 'speech-active-input': speechToCreate.step === 2 }" class="form-input" type="text" v-model="inputs.title" />
       <p class="input-error">{{ errors.title }}</p>
     </div>
     <div>
-      <label>Description <span class="text-red-500" >*</span></label>
-      <textarea class="form-input" v-model="inputs.description" ></textarea>
+      <label :class="{ 'speech-active-label': speechToCreate.step === 3 }" >Description <span class="text-red-500" >*</span></label>
+      <textarea :class="{ 'speech-active-input': speechToCreate.step === 3 }" class="form-input" v-model="inputs.description" ></textarea>
       <p class="input-error">{{ errors.description }}</p>
     </div>
     <div>
-      <label>Type <span class="text-red-500" >*</span></label>
-      <select v-model="inputs.type" class="form-input">
+      <label :class="{ 'speech-active-label': speechToCreate.step === 4 }" >Type <span class="text-red-500" >*</span></label>
+      <select :class="{ 'speech-active-input': speechToCreate.step === 4 }" v-model="inputs.type" class="form-input">
         <option value="0" >Habit</option>
         <option value="1" >Task</option>
       </select>
     </div>
     <div v-show="inputs.type == 0" >
-      <label>Link a Habit</label>
-      <select v-model="inputs.habit" class="form-input" >
+      <label :class="{ 'speech-active-label': speechToCreate.step === 5 }" >Link a Habit</label>
+      <select :class="{ 'speech-active-input': speechToCreate.step === 5 }" v-model="inputs.habit" class="form-input" >
         <option
           v-for="habit in habitList" :key="`habits-${ habit._id }`"
           :value="habit._id"
@@ -162,8 +268,8 @@
     </div>
     <div class="space-y-4" >
       <div>
-        <label>Repeat Every</label>
-        <div class="flex space-x-2" >
+        <label :class="{ 'speech-active-label': speechToCreate.step === 6 }" >Repeat Every</label>
+        <div :class="{ 'speech-active-input': speechToCreate.step === 6 }" class="flex flex-wrap space-2" >
           <label v-for="(day, dayIndex) in listOfDays" :key="day" class="p-1 border flex items-center rounded space-x-2 select-none" >
             <input type="checkbox" v-model="inputs.repeat_on_days[dayIndex]" class="focus:ring-blue-500" >
             <div>{{ day }}</div>
@@ -171,9 +277,9 @@
         </div>
       </div>
       <div>
-        <label>Until</label>
+        <label :class="{ 'speech-active-label': speechToCreate.step === 7 }" >Until</label>
         <div>
-          <input class="form-input" type="date" v-model="inputs.repeat_until" :min="moment().format('YYYY-MM-DD')" />
+          <input :class="{ 'speech-active-input': speechToCreate.step === 7 }" class="form-input" type="date" v-model="inputs.repeat_until" :min="moment().format('YYYY-MM-DD')" />
         </div>
       </div>
     </div>
@@ -182,3 +288,12 @@
     </div>
   </form>
 </template>
+
+<style scoped>
+  .speech-active-label{
+    @apply text-blue-500
+  }
+  .speech-active-input{
+    @apply border-2 !border-blue-500 rounded-md;
+  }
+</style>

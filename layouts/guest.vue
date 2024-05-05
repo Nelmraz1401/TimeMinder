@@ -20,5 +20,7 @@
     <section class="container" >
       <slot />
     </section>
+
+    <Toast />
   </div>
 </template>

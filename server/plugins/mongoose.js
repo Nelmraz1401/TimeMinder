@@ -11,6 +11,6 @@ export default async () => {
 ---
 `);
   } catch (err) {
-    console.log(err)
+    // 
   }
 };

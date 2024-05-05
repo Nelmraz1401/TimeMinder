@@ -89,8 +89,6 @@ export const useTasksStore = defineStore('tasks', () => {
    * @param {Object} queries
    */
   async function fetchTasks(queries = {}){
-    console.log(`[FETCHING TASKS]`)
-    console.log(queries)
 
     taskListFetching.value = true
     let queriesString = new URLSearchParams(queries).toString()
@@ -118,7 +116,7 @@ export const useTasksStore = defineStore('tasks', () => {
     taskListFetching.value = false
     return {
       total: res.data.length,
-      first: res.data[res.data.length - 1]
+      first: res.data.length > 0 ? res.data[res.data.length - 1] : null
     }
   }
 

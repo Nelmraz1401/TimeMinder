@@ -8,7 +8,7 @@
 
   function getPartitionHeader(date1, date2){
     if( !moment(date1).isSame(moment(date2), 'day') ){
-      return `<div class="text-sm text-center uppercase font-semibold text-gray-400 mt-12 mb-2" >${ moment(date1).format('LL') }`
+      return `<div class="text-sm text-start ml-5 uppercase font-medium text-gray-400 mt-12 mb-3" >${ moment(date1).format('LL') }`
     }else{
       return ''
     }
@@ -26,28 +26,39 @@
     })
 
     isStillAllowedToFetchOld.value = response.total > 0
-    fetchingFrom = moment(response.first.deadline_on)
     fetchingFromLoading.value = false
+    fetchingFrom = moment(response.first.deadline_on)
   }
 
-  onMounted(() => {
-    tasksStore.fetchTasks({
+  onMounted(async () => {
+    await tasksStore.fetchTasks({
       from: fetchingFrom.format('YYYY-MM-DD'),
       action: 'RESET'
     });
+
+    if( list.length == 0 ){
+      fetchOld()
+    }
+
+    const taskList = document.querySelector("#taskList");
+          taskList.scrollTop += 10
+    
+    taskList.addEventListener("scroll", async function(){
+      if( taskList.scrollTop == 0 && isStillAllowedToFetchOld.value == true ){
+        await fetchOld()
+        taskList.scrollTop += 10
+      }
+    })
+
   })
 </script>
 
 <template>
-  <div class="h-[82vh] overflow-y-auto px-2 space-y-2" >
-
-    <div class="flex items-center justify-center" >
-      <div v-if="isStillAllowedToFetchOld" @click="fetchOld()" class="text-center px-4 py-2 border border-gray-300 rounded uppercase text-sm text-gray-700 cursor-pointer space-x-2 bg-gray-200 inline-block" >
-        <div class="flex items-center justify-center" >
-          <div v-show="fetchingFromLoading" class="w-3 h-3 rounded-full bg-blue-500 animate-ping mr-2" ></div>      
-          <div>{{ fetchingFromLoading ? 'Loading' : 'Load' }} old tasks</div>
-        </div>
-      </div> 
+  <div id="taskList" class="h-[96vh] overflow-y-auto p-5 space-y-2" >
+    <p class="text-xl font-medium ml-2">Task List</p>
+    <div v-show="fetchingFromLoading" class="w-full p-4 text-gray-700 flex items-center justify-center space-x-2" >
+      <div class="w-3 h-3 rounded-full bg-primary-700 animate-ping mr-2" ></div>      
+      <div>Loading</div>
     </div>
 
     <div v-show="taskListFetching == false && list.length == 0" class="py-24 text-center space-y-2" >

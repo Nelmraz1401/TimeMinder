@@ -34,18 +34,34 @@
 </script>
 
 <template>
-  <div>
+  <div class="p-5">
     <div class="flex justify-between uppercase">
-      <div @click="changeMonth(-1)" class="select-none cursor-pointer p-2 text-center" >&lt; {{ activeMonth.clone().subtract(1, 'month').format('MMMM') }}</div>
+      <div @click="changeMonth(-1)" class="select-none cursor-pointer p-2 text-center" >
+        <span>
+          <Icon
+              name="mingcute:arrow-left-fill"
+              class="text-2xl transition-all cursor-pointer text-gray-400" 
+          />
+        </span> 
+        {{ activeMonth.clone().subtract(1, 'month').format('MMMM') }}
+      </div>
       <div class="p-2 text-center text-lg font-semibold" >{{ activeMonth.format('MMMM YYYY') }}</div>
-      <div @click="changeMonth(1)" class="select-none cursor-pointer p-2 text-center" >{{ activeMonth.clone().add(1, 'month').format('MMMM') }} &gt;</div>
+      <div @click="changeMonth(1)" class="select-none cursor-pointer p-2 text-center" >
+        {{ activeMonth.clone().add(1, 'month').format('MMMM') }} 
+        <span>
+          <Icon
+              name="mingcute:arrow-right-fill"
+              class="text-2xl transition-all cursor-pointer text-gray-400" 
+          />
+        </span> 
+      </div>
     </div>
 
-    <div class="grid grid-cols-7 bg-white p-5" >
+    <div class="grid grid-cols-7 bg-white rounded-[17px] p-5" >
       <div class="text-center py-2" v-for="day in listOfDays" :key="day" >{{ day }}</div>
       <div v-for="prefix in emptyPrefixDay" :key="`prefix-${ prefix }`" ></div>
       <div
-        class="calendar-box"
+        class="calendar-box h-[7em] md:h-32 overflow-hidden"
         v-for="actualDay in numberOfDays"
         :key="`actual-dates-${ actualDay }`"
         :class="{
@@ -73,6 +89,6 @@
 
 <style scoped>
   .calendar-box{
-    @apply border relative h-32;
+    @apply border relative;
   }
 </style>

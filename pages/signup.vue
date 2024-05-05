@@ -1,6 +1,8 @@
 <script setup >
   import axios from "axios"
   import APIs from "@/services/APIs.js"
+  import { useToastStore } from '@/stores/toast'
+  const toastStore = useToastStore()
 
   definePageMeta({
     layout: 'guest',
@@ -22,7 +24,7 @@
       method: "POST",
       data: input.value
     }).then(res => {
-      alert('Registered!')
+      toastStore.setMessage('Welcome to TimeMinder!')
 
       navigateTo('/signin')
     }).catch(err => {

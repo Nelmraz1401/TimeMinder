@@ -1,7 +1,9 @@
 <script setup >
   import axios from "axios"
   import APIs from "@/services/APIs.js"
-import StateButton from "../components/StateButton.vue";
+  import StateButton from "../components/StateButton.vue";
+  import { useToastStore } from '@/stores/toast'
+  const toastStore = useToastStore()
 
   definePageMeta({
     layout: 'guest',
@@ -26,12 +28,12 @@ import StateButton from "../components/StateButton.vue";
       data: input.value
     }).then(res => {
       const token = res.data.token
+      toastStore.setMessage('Welcome Back!')
 
       const cookieToken = useCookie(config.public.COOKIE_NAME)
       cookieToken.value = token
 
       navigateTo('/')
-      
     }).catch(err => {
       error.value = err.response.data.message
     }).finally(() => {
@@ -53,7 +55,7 @@ import StateButton from "../components/StateButton.vue";
         <label>Password</label>
         <input type="password" class="form-input" v-model="input.password" >
       </div>
-      <div>
+      <div v-if="error" class="card-error" >
         {{ error }}
       </div>
       <StateButton :isLoading="isLoading" >Login</StateButton>

@@ -50,8 +50,6 @@ export const useHabitsStore = defineStore('habits', () => {
    * @param {Number} index
    */
   async function updateHabit(index){
-    if( !list.value[ list.value.length - 1 ]['name'] ) return;
-
     const response = await axios.put(`${ APIs.HABITS }/${ list.value[index]['_id'] }`, list.value[index])
     
     fetchHabits()

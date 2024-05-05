@@ -21,29 +21,22 @@
 
 <template>
   <div
-    class="flex justify-between border rounded p-4 bg-white" 
+    class="flex justify-between border border-gray-300 rounded-lg p-5 bg-white" 
     :class="{
-      'border-red-500': !props.data.finished_on && deadline_on_moment < today_moment
+      'border-red-100': !props.data.finished_on && deadline_on_moment < today_moment
     }"
   >
-    <div>
-      <div @click="tasksStore.toggleTaskFinish(props.data._id)" >
-        <Icon 
-          name="material-symbols-light:check-circle-outline"
-          class="text-4xl transition-all cursor-pointer -ml-1" 
-          :class="{
-            'text-gray-300': !data.finished_on,
-            'text-blue-600': data.finished_on,
-          }"
-        />
+    <div class="flex gap-[30px]">
+      <div>
+        <input @change="tasksStore.toggleTaskFinish(props.data._id)" :checked="data.finished_on" type="checkbox" class="form-checkbox h-5 w-5 text-blue-500 rounded-md">
       </div>
       <div class="flex space-x-2" >
         <div>
-          <div class="font-semibold mb-1" >{{ data.title }}</div>
-          <div class="text-gray-500" >{{ data.description }}</div>
+          <div :class="data.finished_on ? 'line-through text-gray-400': ''" class="text-lg font-medium mb-1 leading-5" >{{ data.title }}</div>
+          <div :class="data.finished_on ? 'line-through text-gray-400': ''" class="text-sm text-gray-500" >{{ data.description }}</div>
 
           <div class="mt-2 flex text-xs space-x-2" >
-            <div>Deadline {{ moment(data.deadline_on).format('LT') }}</div>
+            <div  :class="data.finished_on ? 'line-through text-gray-400': ''">Deadline: {{ moment(data.deadline_on).format('MM/DD/YYYY LT') }}</div>
           </div>
         </div>
       </div>

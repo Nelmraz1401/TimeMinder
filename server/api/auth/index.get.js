@@ -1,4 +1,6 @@
 import { User } from "~~/server/models/user.model";
+import { Task } from "~~/server/models/task.model";
+import { Habit } from "~~/server/models/habit.model";
 import moment from "moment"
 import { experienceMap, addExperience, computeLevel } from "../../services/userLeveling";
 
@@ -25,6 +27,22 @@ export default defineEventHandler(async (event) => {
     data['leveling'] = await addExperience(event.context.auth, 'DAILY_CHECKIN');
     data['just_checked_in'] = true
   }
+
+  // Top Habit
+  data['top_habit'] = await Habit.findOne({
+    user: event.context.auth
+  }).sort({
+    experience: -1
+  }).limit(1);
+  data['top_habit'] = data['top_habit']['name']
+
+  // Task done
+  data['task_done'] = await Task.find({
+    user: event.context.auth,
+    finished_on: {
+      $ne: null
+    }
+  }).count()
 
   return data;
 });
