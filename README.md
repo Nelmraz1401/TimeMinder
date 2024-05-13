@@ -1,5 +1,5 @@
 # Nuxt Todo
-Demo: https://nuxt-todo-two.vercel.app/
+Demo: https://timeminder.vercel.app/
 
 ## Setup
 
