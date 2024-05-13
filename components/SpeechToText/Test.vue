@@ -1,33 +1,18 @@
 <script setup >
-  import Artyom from "artyom.js"
+  const speechToText = useSpeechToText()
 
   const speech = ref('')
   const emits = defineEmits(['speech'])
 
-  onMounted(() => {
-    const artyom = new Artyom();
-
-    var UserDictation = artyom.newDictation({
-      continuous: true,
-      onResult:function(text){
-          console.log(text);
-      },
-      onStart:function(){
-          console.log("Dictation started by the user");
-      },
-      onEnd:function(){
-          alert("Dictation stopped by the user");
-      }
-    });
-
-    UserDictation.start();
-  })
-
   function submit(){
+    speechToText.value.speech = speech.value
+    speechToText.value.last = speech.value
+    speechToText.value.lastTime = new Date().getTime()
     emits('speech', speech.value)
-    speech.value
+    speech.value = ''
+
+    console.log(`[SR TEST]: ${ speechToText.value.speech }`)
   }
-  
 </script>
 
 <template>

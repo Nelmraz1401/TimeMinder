@@ -21,7 +21,7 @@
     }
   })
 
-  const emits = defineEmits(['submit']);
+  const emits = defineEmits(['submit', 'open']);
   const listOfDays = ref(['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'])
   const inputs = ref({
     title: '',
@@ -116,9 +116,11 @@
       inputs.value.title = res.data.title
       inputs.value.description = res.data.description
       inputs.value.deadline_on = res.data.deadline_on
-      inputs.value.repeat_on_days = res.data.repeat_on_days
+      inputs.value.repeat_on_days = res.data.repeat_on_days ?? [false ,false, false, false, false, false, false]
       inputs.value.type = res.data.type
       inputs.value.habit = res.data.habit
+
+      emits('open')
     })
   });
 
@@ -130,11 +132,12 @@
 
   function stcJump(step = 1){
     if( (step == -1 && speechToCreate.value.step == 1) || (step == 1 && speechToCreate.value.step == speechToCreate.value.max)  ) return false;
-
     speechToCreate.value.step += step
   }
 
   function parseSpeech(speech){
+    console.log(`PARSING: "${ speech }"`)
+
     if( !props.creating || !speech ) return false;
 
     speech = speech.trim()
@@ -188,6 +191,15 @@
           if( !content ) return
         }
 
+        if( key == 'habit' ){
+          habitList.value.forEach(habit => {
+            if( habit.name.toUpperCase() == speech.toUpperCase() ){
+              inputs.value.habit = habit._id
+            }
+          })
+          return
+        }
+
         if( key == 'repeat_on_days' ){
           const parsedSpeech = content.split(' ')
           const fullList = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']
@@ -203,6 +215,15 @@
           return
         }
 
+        if( key == 'repeat_until' ){
+          content = speech.replaceAll('.', '')
+          content = speech.replaceAll(' am', 'AM')
+          content = speech.replaceAll(' pm', 'PM')
+          content = moment(speech).toDate()
+          
+          if( !content ) return console.warn(`Invalid Date: ${ content }`)
+        }
+
         if( key ){
           inputs.value[key] = content
           speechToText.value.last = speech
@@ -213,7 +234,7 @@
 
   }
 
-  watch(() => speechToText.value.speech, () => {
+  watch(() => speechToText.value.lastTime, () => {
     parseSpeech(speechToText.value.speech)
   })
 

@@ -34,7 +34,10 @@ export default defineEventHandler(async (event) => {
   }).sort({
     experience: -1
   }).limit(1);
-  data['top_habit'] = data['top_habit']['name']
+
+  if( data['top_habit'] ){
+    data['top_habit'] = data['top_habit']['name']
+  }
 
   // Task done
   data['task_done'] = await Task.find({

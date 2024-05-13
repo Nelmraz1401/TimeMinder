@@ -5,7 +5,7 @@
         <NuxtLink to="/" class="flex space-x-2" >
           <div class="flex space-x-2 items-center text-primary-700 font-semibold" >
             <img src="/timeminder.png" class="w-12" />
-            <div>TimeMinder</div>
+            <div class="hidden md:block" >TimeMinder</div>
           </div>
         </NuxtLink>
         <div class="flex items-center space-x-6" >

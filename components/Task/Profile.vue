@@ -33,6 +33,7 @@
 <template>
   <div id="profile" class="h-[100vh]">
     <SpeechToTextListen @speech="listenToOpenCreate" />
+    <!-- <speechToTextTest @speech="listenToOpenCreate" /> -->
 
     <div class="w-full bg-white h-[97%] rounded-[17px] mb-9 animate-easeUp transition-all duration-300 ease-in-out" :class="!createToggle ? 'to-top': 'to-display'">
         <div class="w-full flex items-center justify-between rounded-[17px] py-5 px-4 bg-[#4264D0]">
@@ -44,7 +45,7 @@
             />
         </div>
         <div class="px-2 md:px-7 py-2 max-h-[90vh] overflow-y-auto">
-            <TaskCreate :creating="createToggle" />
+            <TaskCreate :creating="createToggle" @open="createToggle = true" />
         </div>
     </div>
     <div class="hidden md:block bg-white h-max rounded-[17px] mb-9">

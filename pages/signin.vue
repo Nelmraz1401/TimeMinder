@@ -44,21 +44,26 @@
 </script>
 
 <template>
-  <div class="container-small py-12" >
-    <h2 class="text-center" >Welcome Back</h2>
-    <form @submit.prevent="submitForm()" class="space-y-2" >
-      <div>
-        <label>Email address</label>
-        <input type="text" class="form-input" v-model="input.email" >
-      </div>
-      <div>
-        <label>Password</label>
-        <input type="password" class="form-input" v-model="input.password" >
-      </div>
-      <div v-if="error" class="card-error" >
-        {{ error }}
-      </div>
-      <StateButton :isLoading="isLoading" >Login</StateButton>
-    </form>
+  <div class="h-[80vh] flex items-center justify-center" >
+    <div class="container-small py-12" >
+      <h2 class="text-center" >Welcome Back</h2>
+      <form @submit.prevent="submitForm()" class="space-y-2" >
+        <div>
+          <label>Email address</label>
+          <input type="text" class="form-input" v-model="input.email" >
+        </div>
+        <div>
+          <label>Password</label>
+          <input type="password" class="form-input" v-model="input.password" >
+        </div>
+        <div v-if="error" class="card-error" >
+          {{ error }}
+        </div>
+        <div class="flex items-center justify-between" >
+          <StateButton :isLoading="isLoading" >Login</StateButton>
+          <div>Not a member? <NuxtLink class="font-semibold" to="/signup" >Sign up</NuxtLink></div>
+        </div>
+      </form>
+    </div>
   </div>
 </template>

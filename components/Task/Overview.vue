@@ -6,7 +6,7 @@
   import moment from "moment"
   import { useTasksStore } from '@/stores/tasks'
   import bg from '../../public/sec.png'
-import { onMounted } from "vue"
+  import { onMounted } from "vue"
   const tasksStore = useTasksStore()
   const listTaskForToday = computed(() => {
     return tasksStore.list.filter(task => {

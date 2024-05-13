@@ -6,8 +6,34 @@
 </script>
 
 <template>
-  <section class="h-[90vh] flex flex-col space-y-4 items-center justify-center text-center" >
-    <h1>TimeMinder</h1>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem inventore impedit eos odit maiores veniam cumque aut nam assumenda, porro facilis in expedita deserunt est. Corrupti rem error quas rerum?</p>
+  <section class="md:h-[90vh] flex flex-col space-y-4 items-center justify-center" >
+    <div class="space-y-12 px-6" >
+
+      <div class="flex items-center justify-between flex-wrap px-5 text-center md:text-left py-12" >
+        <div>
+          <h1 class="text-5xl" >Your habit tracker</h1>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+          <p>Autem inventore impedit eos odit maiores veniam cumque assumenda.</p>
+          <button class="mt-6" >Start tracking your habits</button>
+        </div>
+        <img src="/undraw_timeline_re_aw6g.svg" class="w-[200px] mx-auto mt-6 md:mt-0 md:w-[40%]" />
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-3 text-center" >
+          <div class="border p-2 rounded-md py-12" >
+            <h3>Time Tracking</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+          </div>
+          <div class="border p-2 rounded-md py-12" >
+            <h3>Track your habits</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+          </div>
+          <div class="border p-2 rounded-md py-12" >
+            <h3>Text to Speech</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+          </div>
+      </div>
+
+    </div>
   </section>
 </template>
