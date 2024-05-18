@@ -10,7 +10,7 @@
         </NuxtLink>
         <div class="flex items-center space-x-6" >
           <NuxtLink to="/about" >About</NuxtLink>
-          <NuxtLink to="/extra" >Extra</NuxtLink>
+          <NuxtLink to="/extra" >Tips</NuxtLink>
           <NuxtLink to="/signup" >Sign up</NuxtLink>
           <NuxtLink to="/signin" class="btn" >Sign in</NuxtLink>
         </div>
