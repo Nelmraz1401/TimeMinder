@@ -136,7 +136,7 @@
 <template>
   <div :class="isDashboardOnly ? 'p-0':'px-1 md:px-6 space-y-4'">
     <template v-if="!isDashboardOnly">
-      <div class="banner-main flex flex-col justify-between p-8 items-start w-full md:rounded-[17px] h-[180px]  md:h-[250px] img-assistant  mb-2 md:mb-7" :style="`background-image: url(${bg})`">
+      <div class="banner-main flex flex-col justify-between p-8 items-start w-full md:rounded-[17px] h-[180px]  md:h-[200px] img-assistant  mb-2 md:mb-7" :style="`background-image: url(${bg})`">
           <div class="flex gap-2 bg-blue-500 rounded-md py-[6px] px-4">
             <Icon
               name="fluent:calendar-12-filled"
@@ -193,7 +193,7 @@
       <div v-if="isStatsLoaded && (chartJSDoughnut.chartData.datasets[0]['data'][0] !== undefined || chartJSDoughnut.chartData.datasets[0]['data'][0])" class="cardesh2 p-5 hidden md:block md:p-[30px]   md:bg-white -mt-4 md:mt-[2em]" >
         <p class="text-lg font-medium">Your Stats</p>
         <p class="text-sm text-gray-400 mb-5">Based on Jan-15-2024 - Current data</p>
-        <div class="grid grid-cols-2 gap-5 overflow-x-auto overflow-y-hidden md:w-full " >
+        <div class="grid grid-cols-2 gap-5" >
           <div class="h-[300px] flex justify-center items-center flex-col">
             <div class="text-center p-2 uppercase" >
               <label>All Time Stats</label>
